@@ -1,28 +1,36 @@
 const typeDefs = `
-  type Thought {
+  type User {
     _id: ID
-    thoughtText: String
-    thoughtAuthor: String
-    createdAt: String
-    comments: [Comment]!
+    username: String
+    email: String
+    password: String
+    savedBooks: [Book]!
   }
 
-  type Comment {
+  type Book {
     _id: ID
-    commentText: String
-    createdAt: String
+    authors: [String]!
+    description: String
+    bookId: String
+    image: String
+    link: String
+    title: String
   }
 
   type Query {
-    thoughts: [Thought]!
-    thought(thoughtId: ID!): Thought
+    books: [Book]!
+    book(Book: ID!): Book
+    users: [User]!
+    user(User: ID!): User
   }
 
   type Mutation {
-    addThought(thoughtText: String!, thoughtAuthor: String!): Thought
-    addComment(thoughtId: ID!, commentText: String!): Thought
-    removeThought(thoughtId: ID!): Thought
-    removeComment(thoughtId: ID!, commentId: ID!): Thought
+    addBook(description: String!, bookId: String!, title: String!): Book
+    addUser(username: String!, email: String!, password: String!): User
+    saveBook(userId: ID!, bookId: ID!): User
+    removeBook(bookId: ID!): Book
+    removeUser(userId: ID!): User
+    removeSavedBook(userId: ID!, bookId: ID!): User
   }
 `;
 

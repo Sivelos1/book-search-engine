@@ -1,25 +1,37 @@
-const { Thought } = require('../models');
+const { Book, User } = require('../models');
 
 const resolvers = {
   Query: {
-    thoughts: async () => {
-      return Thought.find().sort({ createdAt: -1 });
+    books: async () => {
+      return Book.find().sort({ _id: -1 });
     },
 
-    thought: async (parent, { thoughtId }) => {
-      return Thought.findOne({ _id: thoughtId });
+    book: async (parent, { targetId }) => {
+      return Book.findOne({ _id: targetId });
+    },
+    users: async () => {
+      return User.find().sort({ _id: -1 });
+    },
+
+    user: async (parent, { targetId }) => {
+      return User.findOne({ _id: targetId });
     },
   },
 
   Mutation: {
-    addThought: async (parent, { thoughtText, thoughtAuthor }) => {
-      return Thought.create({ thoughtText, thoughtAuthor });
+    addBook: async (parent, { description, bookId, title }) => {
+      return Book.create({ description, bookId, title });
     },
-    addComment: async (parent, { thoughtId, commentText }) => {
-      return Thought.findOneAndUpdate(
-        { _id: thoughtId },
+    addUser: async (parent, { username, email, password }) => {
+      return User.create({ username, email, password });
+    },
+    saveBook: async (parent, { userId, bookId }) => {
+      const book = Book.findOne({_id: bookId});
+      if(!book) return;
+      return User.findOneAndUpdate(
+        { _id: userId },
         {
-          $addToSet: { comments: { commentText } },
+          $addToSet: { savedBooks: { book } },
         },
         {
           new: true,
@@ -27,13 +39,19 @@ const resolvers = {
         }
       );
     },
-    removeThought: async (parent, { thoughtId }) => {
-      return Thought.findOneAndDelete({ _id: thoughtId });
+    removeBook: async (parent, { bookId }) => {
+      return Book.findOneAndDelete({ _id: bookId });
     },
-    removeComment: async (parent, { thoughtId, commentId }) => {
-      return Thought.findOneAndUpdate(
-        { _id: thoughtId },
-        { $pull: { comments: { _id: commentId } } },
+    removeUser: async (parent, { userId }) => {
+      return User.findOneAndDelete({ _id: userId });
+    },
+    removeSavedBook: async (parent, { userId, bookId }) => {
+      
+      const book = Book.findOne({_id: bookId});
+      if(!book) return;
+      return User.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { savedBooks: { _id: bookId } } },
         { new: true }
       );
     },
