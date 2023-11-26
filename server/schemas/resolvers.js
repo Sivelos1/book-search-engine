@@ -1,4 +1,5 @@
 const { Book, User } = require('../models');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -39,7 +40,9 @@ const resolvers = {
       return { token, user };
     },
     addUser: async (parent, { username, email, password }) => {
-      return User.create({ username, email, password });
+      const user = await User.create({ username, email, password });
+      const token = signToken(user);
+      return { token, user };
     },
     saveBook: async (parent, { userId, bookId }) => {
       const book = Book.findOne({_id: bookId});
