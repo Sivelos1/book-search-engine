@@ -12,7 +12,6 @@ const resolvers = {
     users: async () => {
       return User.find().sort({ _id: -1 });
     },
-
     user: async (parent, { targetId }) => {
       return User.findOne({ _id: targetId });
     },
@@ -21,6 +20,23 @@ const resolvers = {
   Mutation: {
     addBook: async (parent, { description, bookId, title }) => {
       return Book.create({ description, bookId, title });
+    },
+    login: async (parent, { email, password }) => {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        throw AuthenticationError;
+      }
+
+      const correctPw = await user.isCorrectPassword(password);
+
+      if (!correctPw) {
+        throw AuthenticationError;
+      }
+
+      const token = signToken(user);
+
+      return { token, user };
     },
     addUser: async (parent, { username, email, password }) => {
       return User.create({ username, email, password });
