@@ -27,7 +27,6 @@ module.exports = {
       console.log('Invalid token');
       return res.status(400).json({ message: 'invalid token!' });
     }
-
     // send to next endpoint
     next();
   },
