@@ -11,6 +11,9 @@ query me($targetId: String!) {
       _id
       title
       bookId
+      description
+      authors
+      image
     }
   }
 }

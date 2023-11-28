@@ -76,7 +76,7 @@ const SearchBooks = () => {
     try {
       console.log(bookToSave);
       const me =  Auth.getProfile().data;
-      const { data } = await saveBook({variables: {userId: me.id, input: bookToSave},});
+      const { data } = await saveBook({variables: {userId: me._id, input: bookToSave},});
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);

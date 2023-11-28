@@ -30,7 +30,7 @@ const typeDefs = `
   }
 
   type Query {
-    me(targetId: ID!): User
+    me(targetId: String!): User
   }
 
   type Mutation {
